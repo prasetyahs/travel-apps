@@ -85,14 +85,14 @@ class LoginView extends GetView<LoginController> {
                   ),
                   AppsTextField(
                     "Email",
-                    textEditingController: TextEditingController(),
+                    textEditingController: controller.textEditingController[0],
                   ),
                   SizedBox(
                     height: 10.h,
                   ),
                   AppsTextField(
                     "Password",
-                    textEditingController: TextEditingController(),
+                    textEditingController: controller.textEditingController[1],
                     obsecureText: true,
                   ),
                   SizedBox(
@@ -125,7 +125,12 @@ class LoginView extends GetView<LoginController> {
                   SizedBox(
                     height: 20.h,
                   ),
-                  AppsButton.normalButton(()=>Get.toNamed(Routes.INDEX), "Masuk", AppsColors.primary())
+                  Obx(() => !controller.isAuth.value
+                      ? AppsButton.normalButton(() => controller.onAuth(),
+                          "Masuk", AppsColors.primary())
+                      : const Center(
+                          child: CircularProgressIndicator(),
+                        ))
                 ],
               ),
             ),

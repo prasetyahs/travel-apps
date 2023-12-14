@@ -11,19 +11,16 @@ import 'package:travel/app/modules/index/views/search_view.dart';
 import '../../../../utilities/exports.dart';
 
 class IndexController extends GetxController {
-  //TODO: Implement IndexController
-
   var switchMaps = false.obs;
   final count = 0.obs;
   var mapController = MapController().obs;
   var viewBottomNav = [
-    DiscoverView(),
-    ExplorerView(),
-    SearchView(),
-    ProfileView(),
+    const DiscoverView(),
+    const ExplorerView(),
+    const SearchView(),
+    const ProfileView(),
   ];
   var currentRangeValues = const RangeValues(200, 8000).obs;
-  
 
   @override
   void onInit() {

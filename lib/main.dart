@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:travel/utilities/apps_themes.dart';
 import 'package:travel/utilities/exports.dart';
 
@@ -5,7 +7,9 @@ import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await GetStorage.init();
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  await GetStorage.init();
   runApp(ScreenUtilInit(
     minTextAdapt: true,
     splitScreenMode: true,
