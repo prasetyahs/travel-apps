@@ -1,9 +1,15 @@
+import 'package:lottie/lottie.dart';
+import 'package:travel/app/data/model/category_model.dart';
+import 'package:travel/app/data/model/travel_model.dart';
+import 'package:travel/app/modules/index/controllers/index_controller.dart';
 import 'package:travel/component/apps_item_row_travel.dart';
 import 'package:travel/utilities/apps_colors.dart';
+import 'package:travel/utilities/env.dart';
+import 'package:travel/utilities/shimmer_single_container.dart';
 
 import '../../../../utilities/exports.dart';
 
-class DiscoverView extends GetView {
+class DiscoverView extends GetView<IndexController> {
   const DiscoverView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -24,6 +30,7 @@ class DiscoverView extends GetView {
                     fontSize: 12.sp),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.location_on,
@@ -56,29 +63,52 @@ class DiscoverView extends GetView {
           ],
         ),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: 10.h,
               ),
-              SizedBox(
-                height: 45.h,
-                child: ListView.builder(
-                  shrinkWrap: true, // and set this
-                  itemBuilder: (context, index) {
-                    return CategoryFilter(
-                      color: index == 0 ? AppsColors.primary() : Colors.white,
-                      textColor: index == 0 ? Colors.white : AppsColors.dark(),
-                      title: index == 0 ? "Semua" : "Wisata Bahari",
-                      marginLeft: index == 0 ? 15.w : 0.0,
-                      marginRight: index == 5 ? 20.w : 0.0,
-                    );
-                  },
-                  itemCount: 5,
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
+              Obx(() {
+                if (controller.isLoadCategory.value) {
+                  return SizedBox(
+                    height: 30.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ShimmerSingleContainer(
+                            width: 100.w, height: 10.h, paddingHorizontal: 5.w);
+                      },
+                    ),
+                  );
+                }
+                return SizedBox(
+                  height: 45.h,
+                  child: ListView.builder(
+                    shrinkWrap: true, // and set this
+                    itemBuilder: (context, index) {
+                      CategoryModel categoryModel = CategoryModel.fromJson(
+                          controller.listCategory[index]);
+                      return GestureDetector(
+                        onTap: () {},
+                        child: CategoryFilter(
+                          color:
+                              index == 0 ? AppsColors.primary() : Colors.white,
+                          textColor:
+                              index == 0 ? Colors.white : AppsColors.dark(),
+                          title: categoryModel.nama!,
+                          marginLeft: index == 0 ? 15.w : 0.0,
+                          marginRight: index == 5 ? 20.w : 0.0,
+                        ),
+                      );
+                    },
+                    itemCount: controller.listCategory.length,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                );
+              }),
               SizedBox(
                 height: 20.h,
               ),
@@ -109,19 +139,37 @@ class DiscoverView extends GetView {
                 height: 10.h,
               ),
               SizedBox(
-                height: 250.h,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return BestPlace(
-                      marginLeft: index == 0 ? 15.w : 0.0,
-                      marginRight: index == 5 ? 20.w : 0.0,
+                  height: 250.h,
+                  child: Obx(() {
+                    if (controller.isLoadRecommend.value) {
+                      return ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return ShimmerSingleContainer(
+                                width: 220.w,
+                                height: 250.h,
+                                paddingHorizontal: 15.w);
+                          });
+                    }
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        TravelModel travelModel =
+                            TravelModel.fromJson(controller.myRecommend[index]);
+                        return BestPlace(
+                          travelModel: travelModel,
+                          marginLeft: index == 0 ? 15.w : 0.0,
+                          marginRight: index == 5 ? 20.w : 0.0,
+                        );
+                      },
+                      itemCount: controller.myRecommend.length,
                     );
-                  },
-                  itemCount: 5,
-                ),
-              ),
+                  })),
               SizedBox(
                 height: 20.h,
               ),
@@ -151,10 +199,28 @@ class DiscoverView extends GetView {
               SizedBox(
                 height: 10.h,
               ),
-              Column(
-                children:
-                    List.generate(3, (index) => const AppsItemRowTravel()),
-              )
+              Obx(() {
+                if (controller.isLoadPopular.value) {
+                  return Column(
+                    children: List.generate(
+                        3,
+                        (index) => Padding(
+                              padding: EdgeInsets.symmetric(vertical: 5.h),
+                              child: ShimmerSingleContainer(
+                                  width: Get.width,
+                                  height: 100.h,
+                                  paddingHorizontal: 15.w),
+                            )),
+                  );
+                }
+                return Column(
+                  children: List.generate(controller.myPopular.length, (index) {
+                    TravelModel travelModel =
+                        TravelModel.fromJson(controller.myPopular[index]);
+                    return AppsItemRowTravel(travelModel: travelModel);
+                  }),
+                );
+              })
             ],
           ),
         ));
@@ -163,9 +229,12 @@ class DiscoverView extends GetView {
 
 class BestPlace extends GetView {
   final double marginLeft, marginRight;
-
+  final TravelModel travelModel;
   const BestPlace(
-      {super.key, required this.marginLeft, required this.marginRight});
+      {super.key,
+      required this.marginLeft,
+      required this.marginRight,
+      required this.travelModel});
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +246,9 @@ class BestPlace extends GetView {
         height: 250.h,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
+            color: travelModel.photos!.isNotEmpty
+                ? Colors.transparent
+                : Colors.white,
             boxShadow: const [
               BoxShadow(
                   spreadRadius: 0,
@@ -184,24 +256,34 @@ class BestPlace extends GetView {
                   offset: Offset(0, 0),
                   color: Color.fromRGBO(0, 0, 0, 0.25))
             ],
-            image: const DecorationImage(
-                fit: BoxFit.cover, image: AssetImage("assets/keong.jpg"))),
+            image: travelModel.photos!.isNotEmpty
+                ? const DecorationImage(
+                    fit: BoxFit.cover, image: NetworkImage(Env.IMAGE_URL))
+                : null),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              LottieBuilder.asset(
+                "assets/image_not_found.json",
+                width: 200.w,
+                fit: BoxFit.fill,
+              ),
               Text(
-                "Taman Mini Indonesia Indah",
+                travelModel.name ?? "-",
                 style: TextStyle(
-                    color: Colors.white,
+                    color: travelModel.photos!.isNotEmpty
+                        ? Colors.white
+                        : Colors.black,
                     fontWeight: FontWeight.w800,
-                    fontSize: 20.sp,
+                    fontSize: 15.sp,
                     letterSpacing: 0.5),
               ),
               Row(
                 children: List.generate(
-                    5,
+                    travelModel.rating!,
                     (index) => Icon(
                           Icons.star,
                           color: Colors.amber,

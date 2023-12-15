@@ -18,6 +18,10 @@ class StorageService {
     return userMap;
   }
 
+  String readString({required String key}) {
+    return _box.read(key).toString().replaceAll('"', "");
+  }
+
   Future<void> delete({required String key}) async {
     await _box.remove(key);
   }

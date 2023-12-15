@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:get/get.dart';
 import 'package:travel/app/routes/app_pages.dart';
 import 'package:travel/component/apps_button.dart';
 import 'package:travel/utilities/apps_colors.dart';

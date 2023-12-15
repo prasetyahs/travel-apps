@@ -1,5 +1,7 @@
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:travel/app/data/model/travel_model.dart';
 import 'package:travel/app/modules/index/controllers/index_controller.dart';
 import 'package:travel/component/apps_item_row_travel.dart';
 import 'package:travel/utilities/apps_colors.dart';
@@ -52,57 +54,48 @@ class ExplorerView extends GetView<IndexController> {
         ),
         body: Obx(() => !controller.switchMaps.value
             ? ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return const AppsItemRowTravel();
+                  TravelModel travelModel =
+                      TravelModel.fromJson(controller.myClustering[index]);
+                  return AppsItemRowTravel(
+                    travelModel: travelModel,
+                  );
                 },
-                itemCount: 10,
+                itemCount: controller.myClustering.length,
               )
-            : FlutterMap(
-                mapController: controller.mapController.value,
-                options: MapOptions(
-                  onTap: (post, lat) {
-                    print(lat);
-                  },
-                  initialCenter: LatLng(-6.253919, 106.919901),
-                  interactionOptions: InteractionOptions(
-                    enableMultiFingerGestureRace: true,
+            : Obx(() => FlutterMap(
+                  mapController: controller.mapController.value,
+                  options: MapOptions(
+                    onTap: (post, lat) {
+                      Get.back();
+                    },
+                    initialCenter: LatLng(controller.lat, controller.long),
+                    interactionOptions: const InteractionOptions(
+                      enableMultiFingerGestureRace: true,
+                    ),
+                    initialZoom: 14,
                   ),
-                  initialZoom: 14,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.syncode.app',
-                  ),
-                  MarkerLayer(
-                    markers: [
-                      Marker(
-                        point: const LatLng(-6.253919, 106.919901),
-                        width: 35,
-                        height: 35,
-                        child: GestureDetector(
-                          onTap: () => print("TAPPING"),
-                          child: Icon(
-                            Icons.location_pin,
-                            size: 35,
-                            color: AppsColors.primary(),
-                          ),
-                        ),
-                      ),
-                      Marker(
-                        point: const LatLng(-6.297309, 106.893019),
-                        width: 35,
-                        height: 35,
-                        child: Icon(
-                          Icons.location_pin,
-                          size: 35,
-                          color: AppsColors.primary(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              )));
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://www.google.cn/maps/vt?lyrs=m@207000000&gl=cn&x={x}&y={y}&z={z}',
+                      userAgentPackageName: 'com.syncode.app',
+                    ),
+                    PopupMarkerLayer(
+                      options: PopupMarkerLayerOptions(
+                          markers: controller.myLocation
+                              .map((element) => element as Marker)
+                              .toList(),
+                          onPopupEvent: (event, selectMarker) =>
+                              showBottomSheet(
+                                  elevation: 1.0,
+                                  context: context,
+                                  builder: (context) => Container(
+                                        height: 100.h,
+                                      ))),
+                    ),
+                  ],
+                ))));
   }
 }

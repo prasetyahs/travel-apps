@@ -1,10 +1,12 @@
+import 'package:lottie/lottie.dart';
+import 'package:travel/app/data/model/travel_model.dart';
 import 'package:travel/utilities/apps_colors.dart';
 
 import '../utilities/exports.dart';
 
 class AppsItemRowTravel extends GetView {
-  const AppsItemRowTravel({super.key});
-
+  const AppsItemRowTravel({super.key, required this.travelModel});
+  final TravelModel travelModel;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,24 +22,31 @@ class AppsItemRowTravel extends GetView {
         ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 80.w,
-              height: 90.h,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage("assets/keong.jpg"))),
-            ),
+            travelModel.photos != null && travelModel.photos!.isNotEmpty
+                ? Container(
+                    width: 80.w,
+                    height: 90.h,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/keong.jpg"))),
+                  )
+                : LottieBuilder.asset(
+                    "assets/image_not_found.json",
+                    width: 80.w,
+                  ),
             SizedBox(
               width: 10.w,
             ),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Taman Mini Indonesia Indah",
+                    travelModel.name!,
                     style: TextStyle(
                         fontSize: 15.sp,
                         color: AppsColors.dark(),
@@ -46,7 +55,7 @@ class AppsItemRowTravel extends GetView {
                   ),
                   Row(
                     children: List.generate(
-                        5,
+                        travelModel.rating!,
                         (index) => Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -54,7 +63,7 @@ class AppsItemRowTravel extends GetView {
                             )),
                   ),
                   Text(
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard \n dummy text ever since the 1500s",
+                    travelModel.description!,
                     textAlign: TextAlign.start,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,

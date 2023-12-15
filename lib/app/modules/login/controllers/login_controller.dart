@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:travel/app/data/api_response.dart';
 import 'package:travel/app/data/model/auth_model.dart';
 import 'package:travel/app/data/repository/auth_repository.dart';
@@ -22,7 +24,8 @@ class LoginController extends GetxController {
     }).then((value) async {
       ApiResponse apiResponse = ApiResponse.fromJson(value);
       if (apiResponse.status!) {
-        await storageService.write(key: "user", value: apiResponse);
+        await storageService.write(key: "user", value: apiResponse.data);
+        await storageService.write(key: "token", value: apiResponse.token);
         await Get.offAndToNamed(Routes.INDEX);
         return;
       }
