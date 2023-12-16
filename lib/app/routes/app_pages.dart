@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/detail_travel/bindings/detail_travel_binding.dart';
+import '../modules/detail_travel/views/detail_travel_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/index/bindings/index_binding.dart';
@@ -36,6 +38,11 @@ class AppPages {
       name: _Paths.INDEX,
       page: () => const IndexView(),
       binding: IndexBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_TRAVEL,
+      page: () => const DetailTravelView(),
+      binding: DetailTravelBinding(),
     ),
   ];
 }

@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:travel/app/data/api_provider.dart';
 import 'package:travel/app/data/api_response.dart';
 import 'package:travel/app/data/model/auth_model.dart';
+import 'package:travel/app/data/model/category_model.dart';
 import 'package:travel/app/data/model/travel_model.dart';
 import 'package:travel/app/data/repository/travel_repository.dart';
 import 'package:travel/app/data/repository/user_repository.dart';
@@ -28,7 +29,7 @@ class IndexController extends GetxController {
     const SearchView(),
     const ProfileView(),
   ];
-  var currentRangeValues = const RangeValues(200, 8000).obs;
+  Rx<RangeValues> currentRangeValues = const RangeValues(0, 0).obs;
   final StorageService storageService;
   final LocationService locationService;
   IndexController(
@@ -41,6 +42,7 @@ class IndexController extends GetxController {
   var myRecommend = [].obs;
   var myPopular = [].obs;
   var myClustering = [].obs;
+  var _mySearchResult = [].obs;
 
   //loading
   var isLoadRecommend = false.obs;
@@ -48,10 +50,13 @@ class IndexController extends GetxController {
   var isLoadCategory = false.obs;
   var isLoadClustering = false.obs;
   var isOnEdit = false.obs;
+  var onLoadSearch = false.obs;
   var markers = [].obs;
 
   var editProfileForm = List.generate(3, (index) => TextEditingController());
-
+  var searchForm = List.generate(1, (index) => TextEditingController());
+  var selectCategory = CategoryModel().obs;
+  var maxPrice = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -68,6 +73,7 @@ class IndexController extends GetxController {
     onLoadRecommend();
     onLoadPopular();
     onLoadClustering();
+    onLoadMaxPrice();
   }
 
   onLoadLocation() async {
@@ -112,7 +118,8 @@ class IndexController extends GetxController {
     listCategory.clear();
     await TravelRepository.getCategory().then((value) {
       ApiResponse apiResponse = ApiResponse.fromJson(value);
-      listCategory.addAll(apiResponse.data);
+      listCategory.addAll(
+          apiResponse.data.map((v) => CategoryModel.fromJson(v)).toList());
     }).catchError((err) => null);
     isLoadCategory.value = false;
   }
@@ -137,6 +144,16 @@ class IndexController extends GetxController {
       myPopular.addAll(apiResponse.data);
     });
     isLoadPopular.value = false;
+  }
+
+  onLoadMaxPrice() async {
+    await TravelRepository.getMaxPrice().then((value) {
+      ApiResponse apiResponse = ApiResponse.fromJson(value);
+      maxPrice.value = apiResponse.data['max'];
+      currentRangeValues.value = RangeValues(0, maxPrice.value.toDouble());
+    }).catchError((err) {
+      return null;
+    });
   }
 
   onLoadClustering() async {
@@ -204,23 +221,42 @@ class IndexController extends GetxController {
     isOnEdit.value = false;
   }
 
+  _onLoadBySearch() async {
+    onLoadSearch.value = true;
+    await TravelRepository.getTravelSearch(
+            category: selectCategory.value.id,
+            city: searchForm[0].text,
+            minPrice: currentRangeValues.value.start,
+            maxPrice: currentRangeValues.value.end)
+        .then((value) {
+      ApiResponse apiResponse = ApiResponse.fromJson(value);
+      _mySearchResult.value =
+          apiResponse.data.map((v) => TravelModel.fromJson(v)).toList();
+    });
+    onLoadSearch.value = false;
+  }
+
   onSearch() async {
+    await _onLoadBySearch();
     showModalBottomSheet(
         context: Get.context!,
         isScrollControlled: true,
         builder: (context) {
           return Container(
-            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 15.w),
+            padding: EdgeInsets.symmetric(vertical: 30.h),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Hasil Pencarian",
-                      style: TextStyle(
-                          fontSize: 15.sp, fontWeight: FontWeight.w700),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                      child: Text(
+                        "Hasil Pencarian",
+                        style: TextStyle(
+                            fontSize: 15.sp, fontWeight: FontWeight.w700),
+                      ),
                     ),
                     const CloseButton()
                   ],
@@ -230,9 +266,10 @@ class IndexController extends GetxController {
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return AppsItemRowTravel(travelModel: TravelModel());
+                      TravelModel travelModel = _mySearchResult[index];
+                      return AppsItemRowTravel(travelModel: travelModel);
                     },
-                    itemCount: 2,
+                    itemCount: _mySearchResult.length,
                   ),
                 )
               ],

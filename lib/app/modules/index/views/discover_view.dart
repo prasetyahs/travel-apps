@@ -89,8 +89,8 @@ class DiscoverView extends GetView<IndexController> {
                   child: ListView.builder(
                     shrinkWrap: true, // and set this
                     itemBuilder: (context, index) {
-                      CategoryModel categoryModel = CategoryModel.fromJson(
-                          controller.listCategory[index]);
+                      CategoryModel categoryModel =
+                          controller.listCategory[index];
                       return GestureDetector(
                         onTap: () {},
                         child: CategoryFilter(

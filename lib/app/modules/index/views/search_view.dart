@@ -1,3 +1,4 @@
+import 'package:travel/app/data/model/category_model.dart';
 import 'package:travel/app/modules/index/controllers/index_controller.dart';
 import 'package:travel/component/apps_button.dart';
 import 'package:travel/component/apps_textfield.dart';
@@ -24,25 +25,48 @@ class SearchView extends GetView<IndexController> {
         children: [
           AppsTextField(
             "Kota",
-            textEditingController: TextEditingController(),
+            textEditingController: controller.searchForm[0],
             suffixIcon: Icon(
               Icons.my_location,
               color: AppsColors.dark(),
             ),
           ),
           SizedBox(
-            height: 10.h,
-          ),
-          AppsTextField(
-            "Kategori",
-            textEditingController: TextEditingController(),
-            suffixIcon: Icon(
-              Icons.category,
-              color: AppsColors.dark(),
-            ),
-          ),
-          SizedBox(
             height: 15.h,
+          ),
+          Obx(() {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10)),
+                child: DropdownButton<CategoryModel>(
+                    isExpanded: true,
+                    icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                    underline: const SizedBox(),
+                    value: controller.selectCategory.value.nama != null
+                        ? controller.selectCategory.value
+                        : controller.listCategory.first,
+                    items: controller.listCategory
+                        .map<DropdownMenuItem<CategoryModel>>((element) {
+                      return DropdownMenuItem(
+                        value: element,
+                        child: Text(
+                          element.nama!,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (CategoryModel? v) {
+                      controller.selectCategory.value = v!;
+                    }),
+              ),
+            );
+          }),
+          SizedBox(
+            height: 20.h,
           ),
           Container(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -54,7 +78,7 @@ class SearchView extends GetView<IndexController> {
                 activeColor: AppsColors.primary(),
                 inactiveColor: AppsColors.primary().withOpacity(0.3),
                 values: controller.currentRangeValues.value,
-                max: 8000,
+                max: controller.maxPrice.value.toDouble(),
                 divisions: 10,
                 labels: RangeLabels(
                   controller.currentRangeValues.value.start.round().toString(),
@@ -67,8 +91,12 @@ class SearchView extends GetView<IndexController> {
           SizedBox(
             height: 10.h,
           ),
-          AppsButton.normalButton(() => controller.onSearch(),
-              "Cari Berdasarkan", AppsColors.primary()),
+          Obx(() => !controller.onLoadSearch.value
+              ? AppsButton.normalButton(() => controller.onSearch(),
+                  "Cari Berdasarkan", AppsColors.primary())
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ))
         ],
       ),
     );

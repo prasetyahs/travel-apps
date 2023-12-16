@@ -16,4 +16,14 @@ class TravelRepository {
     return await ApiProvider.get(
         "api/travel/cluster?my_lat=$lat&my_long=$long&k=5&page=$page");
   }
+
+  static Future<Map<String, dynamic>> getTravelSearch(
+      {category, city, minPrice, maxPrice}) async {
+    return await ApiProvider.get(
+        "api/travel/search?category=$category&city=$city&min_price=$minPrice&max=$maxPrice");
+  }
+
+  static Future<Map<String, dynamic>> getMaxPrice() async {
+    return await ApiProvider.get("api/travel/range-price");
+  }
 }

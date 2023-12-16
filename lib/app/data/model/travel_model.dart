@@ -98,7 +98,7 @@ class Category {
   String? updatedAt;
 
   Category({this.id, this.nama, this.createdAt, this.updatedAt});
-
+  Category.init();
   Category.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nama = json['nama'];

@@ -1,6 +1,8 @@
 import '../utilities/exports.dart';
 
 class AppsButton {
+  AppsButton(Null Function() param0);
+
   static normalButton(onPressed, title, color, {fontColor = Colors.white}) =>
       Container(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
