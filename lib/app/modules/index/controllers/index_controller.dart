@@ -2,15 +2,19 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:travel/app/data/api_provider.dart';
 import 'package:travel/app/data/api_response.dart';
+import 'package:travel/app/data/model/auth_model.dart';
 import 'package:travel/app/data/model/travel_model.dart';
 import 'package:travel/app/data/repository/travel_repository.dart';
+import 'package:travel/app/data/repository/user_repository.dart';
 import 'package:travel/app/modules/index/views/discover_view.dart';
 import 'package:travel/app/modules/index/views/explorer_view.dart';
 import 'package:travel/app/modules/index/views/profile_view.dart';
 import 'package:travel/app/modules/index/views/search_view.dart';
+import 'package:travel/component/apps_item_row_travel.dart';
 import 'package:travel/service/location_service.dart';
 import 'package:travel/service/storage_service.dart';
 import 'package:travel/utilities/apps_colors.dart';
+import 'package:travel/utilities/apps_dialog.dart';
 
 import '../../../../utilities/exports.dart';
 
@@ -43,8 +47,11 @@ class IndexController extends GetxController {
   var isLoadPopular = false.obs;
   var isLoadCategory = false.obs;
   var isLoadClustering = false.obs;
-
+  var isOnEdit = false.obs;
   var markers = [].obs;
+
+  var editProfileForm = List.generate(3, (index) => TextEditingController());
+
   @override
   void onInit() {
     super.onInit();
@@ -53,8 +60,9 @@ class IndexController extends GetxController {
   }
 
   @override
-  Future<void> onReady() async {
+  void onReady() {
     super.onReady();
+    onGetProfile();
     onLoadLocation();
     onLoadCategory();
     onLoadRecommend();
@@ -163,5 +171,73 @@ class IndexController extends GetxController {
         ),
       ));
     }
+  }
+
+  onGetProfile() {
+    try {
+      AuthModel authModel =
+          AuthModel.fromJson(storageService.read(key: "user"));
+      editProfileForm[0].text = authModel.nama!;
+      editProfileForm[1].text = authModel.email!;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  onEditProfile() async {
+    isOnEdit.value = true;
+    var body = {
+      "name": editProfileForm[0].text.toString(),
+      "email": editProfileForm[1].text.toString()
+    };
+    if (editProfileForm[2].text.isNotEmpty) {
+      body['password'] = editProfileForm[2].text.toString();
+    }
+    await UserRepository.editProfile(body).then((value) {
+      ApiResponse apiResponse = ApiResponse.fromJson(value);
+      storageService.write(key: "user", value: apiResponse.data);
+      AppsDialog.showDialogMessage(
+          message: apiResponse.message, status: apiResponse.status);
+    }).catchError((err) {
+      return null;
+    });
+    isOnEdit.value = false;
+  }
+
+  onSearch() async {
+    showModalBottomSheet(
+        context: Get.context!,
+        isScrollControlled: true,
+        builder: (context) {
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 15.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Hasil Pencarian",
+                      style: TextStyle(
+                          fontSize: 15.sp, fontWeight: FontWeight.w700),
+                    ),
+                    const CloseButton()
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return AppsItemRowTravel(travelModel: TravelModel());
+                    },
+                    itemCount: 2,
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 }

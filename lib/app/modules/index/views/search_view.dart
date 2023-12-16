@@ -67,7 +67,8 @@ class SearchView extends GetView<IndexController> {
           SizedBox(
             height: 10.h,
           ),
-          AppsButton.normalButton(() {}, "Cari Berdasarkan", AppsColors.primary()),
+          AppsButton.normalButton(() => controller.onSearch(),
+              "Cari Berdasarkan", AppsColors.primary()),
         ],
       ),
     );

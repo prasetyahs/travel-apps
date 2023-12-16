@@ -20,11 +20,13 @@ class ApiProvider {
         .then((value) => jsonDecode(value.body));
   }
 
-  static Future<Map<String, dynamic>> put(url, {headers, body}) {
+  static Future<Map<String, dynamic>> put(url, {body}) {
     return http
         .put(Uri.parse("$_baseUrl$url"),
-            headers: headers, body: jsonEncode(body))
-        .then((value) => jsonDecode(value.body));
+            body: jsonEncode(body), headers: headers)
+        .then((value) {
+      return jsonDecode(value.body);
+    });
   }
 
   static Future<Map<String, dynamic>> delete(url) {

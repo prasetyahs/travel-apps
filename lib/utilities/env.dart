@@ -1,4 +1,4 @@
 class Env {
-  static const API_URL = "http://192.168.0.104:8000/";
+  static const API_URL = "https://artisan1337.com/";
   static const IMAGE_URL = "";
 }

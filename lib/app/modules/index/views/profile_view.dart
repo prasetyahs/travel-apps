@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-
-import 'package:get/get.dart';
+import 'package:travel/app/modules/index/controllers/index_controller.dart';
 import 'package:travel/component/apps_button.dart';
 import 'package:travel/component/apps_textfield.dart';
 import 'package:travel/utilities/apps_colors.dart';
 import 'package:travel/utilities/exports.dart';
 
-class ProfileView extends GetView {
+class ProfileView extends GetView<IndexController> {
   const ProfileView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -31,28 +29,32 @@ class ProfileView extends GetView {
                 ),
                 AppsTextField(
                   "Nama",
-                  textEditingController: TextEditingController(),
+                  textEditingController: controller.editProfileForm[0],
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
                 AppsTextField(
                   "Email",
-                  textEditingController: TextEditingController(),
+                  textEditingController: controller.editProfileForm[1],
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
                 AppsTextField(
                   "Password",
-                  textEditingController: TextEditingController(),
+                  textEditingController: controller.editProfileForm[2],
                   obsecureText: true,
                 ),
                 SizedBox(
                   height: 20.h,
                 ),
-                AppsButton.normalButton(
-                    () {}, "Edit Profil", AppsColors.primary())
+                Obx(() => !controller.isOnEdit.value
+                    ? AppsButton.normalButton(() => controller.onEditProfile(),
+                        "Edit Profil", AppsColors.primary())
+                    : const Center(
+                        child: CircularProgressIndicator(),
+                      ))
               ],
             ),
           ],
