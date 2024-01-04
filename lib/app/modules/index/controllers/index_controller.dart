@@ -1,4 +1,6 @@
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:travel/app/data/api_provider.dart';
 import 'package:travel/app/data/api_response.dart';
@@ -42,7 +44,7 @@ class IndexController extends GetxController {
   var myRecommend = [].obs;
   var myPopular = [].obs;
   var myClustering = [].obs;
-  var _mySearchResult = [].obs;
+  final _mySearchResult = [].obs;
 
   //loading
   var isLoadRecommend = false.obs;
@@ -57,6 +59,7 @@ class IndexController extends GetxController {
   var searchForm = List.generate(1, (index) => TextEditingController());
   var selectCategory = CategoryModel().obs;
   var maxPrice = 0.obs;
+  var locationData = "Waiting Load".obs;
   @override
   void onInit() {
     super.onInit();
@@ -78,9 +81,13 @@ class IndexController extends GetxController {
 
   onLoadLocation() async {
     await locationService.checkLocationPermission().then((value) async {
-      await locationService.getCurrentLocation().then((value) {
+      await locationService.getCurrentLocation().then((value) async {
         lat = value!.latitude;
         long = value.longitude;
+        await placemarkFromCoordinates(lat, long).then((value) {
+          locationData.value =
+              "${value[0].subAdministrativeArea!},${value[0].administrativeArea!}";
+        });
         myLocation.add(Marker(
           point: LatLng(lat, long),
           width: 35,
@@ -165,6 +172,8 @@ class IndexController extends GetxController {
       myClustering.addAll(apiResponse.data);
     }).whenComplete(() {
       _setMarkersLocation();
+    }).catchError((err) {
+      print(err);
     });
     isLoadClustering.value = false;
   }
@@ -173,20 +182,28 @@ class IndexController extends GetxController {
     for (var element in myClustering) {
       TravelModel travelModel = TravelModel.fromJson(element);
       myLocation.add(Marker(
-        point: LatLng(
-            double.parse(travelModel.lat!), double.parse(travelModel.lon!)),
-        width: 35,
-        height: 35,
-        child: Icon(
-          Icons.location_on,
-          size: 35,
-          color: travelModel.numOfCluster == 0
-              ? Colors.redAccent
-              : travelModel.numOfCluster == 2
-                  ? Colors.amberAccent
-                  : Colors.blueAccent,
-        ),
-      ));
+          point: LatLng(
+              double.parse(travelModel.lat!), double.parse(travelModel.lon!)),
+          width: 35,
+          height: 35,
+          child: SvgPicture.asset("assets/takeof.svg",
+              colorFilter: ColorFilter.mode(
+                  travelModel.numOfCluster == 0
+                      ? Colors.redAccent
+                      : travelModel.numOfCluster == 2
+                          ? Colors.amberAccent
+                          : Colors.blueAccent,
+                  BlendMode.srcIn))
+          // Icon(
+          //   Icons.location_const on,
+          //   size: 35,
+          //   color: travelModel.numOfCluster == 0
+          //       ? Colors.redAccent
+          //       : travelModel.numOfCluster == 2
+          //           ? Colors.amberAccent
+          //           : Colors.blueAccent,
+          // ),
+          ));
     }
   }
 

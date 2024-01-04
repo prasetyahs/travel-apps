@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:travel/component/apps_button.dart';
 import 'package:travel/utilities/apps_colors.dart';
+import 'package:travel/utilities/env.dart';
 import 'package:travel/utilities/exports.dart';
 import '../controllers/detail_travel_controller.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -22,10 +24,7 @@ class DetailTravelView extends GetView<DetailTravelController> {
                     aspectRatio: 16 / 9,
                     viewportFraction: 1,
                   ),
-                  items: [
-                    "https://sitiqotimah.files.wordpress.com/2015/01/pantai-ujung-genteng.jpg",
-                    "https://media.istockphoto.com/id/1300296030/id/foto/pantai-tropis-pohon-palem-ombak-laut-dan-pasir-putih.jpg?s=612x612&w=0&k=20&c=URv_UFEAeLqxGzwFmtxIj8PP5JsgjVORStq25f7sP-k=",
-                  ].map((val) {
+                  items: controller.travelModel.value.photos?.map((val) {
                     return Builder(
                       builder: (BuildContext context) {
                         return Container(
@@ -33,7 +32,9 @@ class DetailTravelView extends GetView<DetailTravelController> {
                           decoration: BoxDecoration(
                               color: Colors.white,
                               image: DecorationImage(
-                                  image: NetworkImage(val), fit: BoxFit.cover)),
+                                  image: CachedNetworkImageProvider(
+                                      Env.IMAGE_URL + val.photo!),
+                                  fit: BoxFit.cover)),
                         );
                       },
                     );
@@ -90,7 +91,7 @@ class DetailTravelView extends GetView<DetailTravelController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              controller.travelModel.value.name!,
+                              controller.travelModel.value.name ?? "-",
                               style: TextStyle(
                                   fontSize: 20.sp, fontWeight: FontWeight.w700),
                             ),
@@ -109,7 +110,7 @@ class DetailTravelView extends GetView<DetailTravelController> {
                                     width: 5.w,
                                   ),
                                   Text(
-                                    controller.travelModel.value.city!,
+                                    controller.travelModel.value.city ?? "-",
                                     style: TextStyle(
                                         fontSize: 13.sp,
                                         fontWeight: FontWeight.w600),
@@ -123,7 +124,8 @@ class DetailTravelView extends GetView<DetailTravelController> {
                                       borderRadius: BorderRadius.circular(15)),
                                   child: Text(
                                     controller
-                                        .travelModel.value.category!.nama!,
+                                            .travelModel.value.category!.nama ??
+                                        "-",
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                 )

@@ -32,11 +32,11 @@ class SearchView extends GetView<IndexController> {
             ),
           ),
           SizedBox(
-            height: 15.h,
+            height: 20.h,
           ),
           Obx(() {
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 decoration: BoxDecoration(

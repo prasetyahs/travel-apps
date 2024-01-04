@@ -36,30 +36,32 @@ class DiscoverView extends GetView<IndexController> {
                     Icons.location_on,
                     color: AppsColors.primary(),
                   ),
-                  Text(
-                    "Jakarta Timur,DKI Jakarta",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 13.sp),
-                  ),
+                  Obx(
+                    () => Text(
+                      controller.locationData.value,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13.sp),
+                    ),
+                  )
                 ],
               ),
             ],
           ),
           actions: [
-            Container(
-              width: 35.w,
-              height: 35.h,
-              margin: EdgeInsets.only(right: 10.w),
-              decoration: BoxDecoration(
-                  image: const DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                          "https://i.pinimg.com/736x/38/93/07/389307d6af5c4be0051b7d3c4f93bf3d.jpg")),
-                  shape: BoxShape.circle,
-                  color: AppsColors.primary().withOpacity(0.8)),
-            ),
+            // Container(
+            //   width: 35.w,
+            //   height: 35.h,
+            //   margin: EdgeInsets.only(right: 10.w),
+            //   decoration: BoxDecoration(
+            //       image: const DecorationImage(
+            //           fit: BoxFit.cover,
+            //           image: NetworkImage(
+            //               "https://i.pinimg.com/736x/38/93/07/389307d6af5c4be0051b7d3c4f93bf3d.jpg")),
+            //       shape: BoxShape.circle,
+            //       color: AppsColors.primary().withOpacity(0.8)),
+            // ),
           ],
         ),
         body: SingleChildScrollView(
@@ -85,7 +87,7 @@ class DiscoverView extends GetView<IndexController> {
                   );
                 }
                 return SizedBox(
-                  height: 45.h,
+                  height: 50.h,
                   child: ListView.builder(
                     shrinkWrap: true, // and set this
                     itemBuilder: (context, index) {
@@ -125,12 +127,15 @@ class DiscoverView extends GetView<IndexController> {
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700),
                     ),
-                    Text(
-                      "Selengkapnya",
-                      style: TextStyle(
-                          color: AppsColors.primary(),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700),
+                    GestureDetector(
+                      onTap: () => controller.indexActive.value = 1,
+                      child: Text(
+                        "Selengkapnya",
+                        style: TextStyle(
+                            color: AppsColors.primary(),
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ],
                 ),
@@ -139,7 +144,7 @@ class DiscoverView extends GetView<IndexController> {
                 height: 10.h,
               ),
               SizedBox(
-                  height: 250.h,
+                  height: 300.h,
                   child: Obx(() {
                     if (controller.isLoadRecommend.value) {
                       return ListView.builder(
@@ -186,12 +191,15 @@ class DiscoverView extends GetView<IndexController> {
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700),
                     ),
-                    Text(
-                      "Selengkapnya",
-                      style: TextStyle(
-                          color: AppsColors.primary(),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700),
+                    GestureDetector(
+                      onTap: () => controller.indexActive.value = 1,
+                      child: Text(
+                        "Selengkapnya",
+                        style: TextStyle(
+                            color: AppsColors.primary(),
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ],
                 ),
@@ -246,9 +254,7 @@ class BestPlace extends GetView {
         height: 250.h,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: travelModel.photos!.isNotEmpty
-                ? Colors.transparent
-                : Colors.white,
+            color: travelModel.photos!.isNotEmpty ? Colors.black : Colors.white,
             boxShadow: const [
               BoxShadow(
                   spreadRadius: 0,
@@ -257,8 +263,10 @@ class BestPlace extends GetView {
                   color: Color.fromRGBO(0, 0, 0, 0.25))
             ],
             image: travelModel.photos!.isNotEmpty
-                ? const DecorationImage(
-                    fit: BoxFit.cover, image: NetworkImage(Env.IMAGE_URL))
+                ? DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                        Env.IMAGE_URL + travelModel.photos![0].photo!))
                 : null),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
@@ -266,11 +274,13 @@ class BestPlace extends GetView {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LottieBuilder.asset(
-                "assets/image_not_found.json",
-                width: 200.w,
-                fit: BoxFit.fill,
-              ),
+              travelModel.photos!.isEmpty
+                  ? LottieBuilder.asset(
+                      "assets/image_not_found.json",
+                      width: 200.w,
+                      fit: BoxFit.fill,
+                    )
+                  : Container(),
               Text(
                 travelModel.name ?? "-",
                 style: TextStyle(

@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
 import 'package:travel/app/data/model/travel_model.dart';
 import 'package:travel/app/routes/app_pages.dart';
 import 'package:travel/utilities/apps_colors.dart';
+import 'package:travel/utilities/env.dart';
 
 import '../utilities/exports.dart';
 
@@ -35,10 +37,12 @@ class AppsItemRowTravel extends GetView {
                       height: 90.h,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
+                          image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: AssetImage("assets/keong.jpg"))),
+                              image: CachedNetworkImageProvider(Env.IMAGE_URL +
+                                  travelModel.photos![0].photo!))),
                     )
+                  // ?
                   : LottieBuilder.asset(
                       "assets/image_not_found.json",
                       width: 80.w,
