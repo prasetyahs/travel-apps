@@ -12,7 +12,7 @@ class SearchView extends GetView<IndexController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Cari Wisata',
+          'searchTravel'.tr,
           style: TextStyle(color: Colors.black, fontSize: 15.sp),
         ),
         centerTitle: false,
@@ -24,7 +24,7 @@ class SearchView extends GetView<IndexController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppsTextField(
-            "Kota",
+            "city".tr,
             textEditingController: controller.searchForm[0],
             suffixIcon: Icon(
               Icons.my_location,
@@ -33,6 +33,16 @@ class SearchView extends GetView<IndexController> {
           ),
           SizedBox(
             height: 20.h,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Text(
+              "category".tr,
+              style: TextStyle(fontSize: 12.sp),
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           Obx(() {
             return Padding(
@@ -71,7 +81,7 @@ class SearchView extends GetView<IndexController> {
           Container(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Text(
-                "Range Harga",
+                "price".tr,
                 style: TextStyle(fontSize: 12.sp),
               )),
           Obx(() => RangeSlider(
@@ -93,7 +103,7 @@ class SearchView extends GetView<IndexController> {
           ),
           Obx(() => !controller.onLoadSearch.value
               ? AppsButton.normalButton(() => controller.onSearch(),
-                  "Cari Berdasarkan", AppsColors.primary())
+                  "searchBy".tr, AppsColors.primary())
               : const Center(
                   child: CircularProgressIndicator(),
                 ))

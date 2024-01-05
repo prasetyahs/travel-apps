@@ -25,7 +25,7 @@ class ExplorerView extends GetView<IndexController> {
         ),
         appBar: AppBar(
           title: Text(
-            'Eksplor Wisata',
+            'explorerTravel'.tr,
             style: TextStyle(color: Colors.black, fontSize: 15.sp),
           ),
           centerTitle: false,
@@ -37,7 +37,7 @@ class ExplorerView extends GetView<IndexController> {
               children: [
                 Obx(
                   () => Text(
-                    "Ganti ${!controller.switchMaps.value ? "Maps" : "List"}",
+                    "${"listSwitch".tr} ${!controller.switchMaps.value ? "Maps" : "List"}",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 13.sp,

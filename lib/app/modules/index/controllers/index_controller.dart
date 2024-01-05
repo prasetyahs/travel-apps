@@ -13,6 +13,7 @@ import 'package:travel/app/modules/index/views/discover_view.dart';
 import 'package:travel/app/modules/index/views/explorer_view.dart';
 import 'package:travel/app/modules/index/views/profile_view.dart';
 import 'package:travel/app/modules/index/views/search_view.dart';
+import 'package:travel/app/routes/app_pages.dart';
 import 'package:travel/component/apps_item_row_travel.dart';
 import 'package:travel/service/location_service.dart';
 import 'package:travel/service/storage_service.dart';
@@ -60,6 +61,8 @@ class IndexController extends GetxController {
   var selectCategory = CategoryModel().obs;
   var maxPrice = 0.obs;
   var locationData = "Waiting Load".obs;
+  final language = [0, 1].obs;
+  var selectLanguage = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -77,6 +80,14 @@ class IndexController extends GetxController {
     onLoadPopular();
     onLoadClustering();
     onLoadMaxPrice();
+    selectLanguage.value = storageService.readValue("lang");
+  }
+
+  setLanguage(selectLang) {
+    selectLanguage.value = selectLang;
+    storageService.writeValue("lang", selectLang);
+    Get.updateLocale(
+        selectLang == 1 ? const Locale('id', 'ID') : const Locale("en", "US"));
   }
 
   onLoadLocation() async {
@@ -85,8 +96,7 @@ class IndexController extends GetxController {
         lat = value!.latitude;
         long = value.longitude;
         await placemarkFromCoordinates(lat, long).then((value) {
-          locationData.value =
-              "${value[0].subAdministrativeArea!},${value[0].administrativeArea!}";
+          locationData.value = value[0].subAdministrativeArea!;
         });
         myLocation.add(Marker(
           point: LatLng(lat, long),
@@ -236,6 +246,11 @@ class IndexController extends GetxController {
       return null;
     });
     isOnEdit.value = false;
+  }
+
+  logout() async {
+    await storageService.clearAll();
+    Get.offAllNamed(Routes.LOGIN);
   }
 
   _onLoadBySearch() async {

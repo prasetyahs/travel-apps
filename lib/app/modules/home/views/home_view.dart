@@ -24,7 +24,7 @@ class HomeView extends GetView<HomeController> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
-              "Selamat Datang",
+              "welcome".tr,
               style: TextStyle(
                   fontSize: 25.sp,
                   fontWeight: FontWeight.w800,
@@ -37,7 +37,7 @@ class HomeView extends GetView<HomeController> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
-              "Berbagi lokasi tempat travel yang ingin anda kunjungi.",
+              "welcomDesc".tr,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 15.sp,
@@ -48,7 +48,7 @@ class HomeView extends GetView<HomeController> {
             height: 20.h,
           ),
           AppsButton.normalButton(
-              () => Get.toNamed(Routes.LOGIN), "Lanjutkan", Colors.white,
+              () => Get.toNamed(Routes.LOGIN), "next".tr, Colors.white,
               fontColor: Colors.black),
           SizedBox(
             height: 80.h,

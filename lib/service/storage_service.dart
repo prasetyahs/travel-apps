@@ -9,6 +9,14 @@ class StorageService {
     await _box.write(key, jsonEncode(value));
   }
 
+  Future<void> writeValue(String key, value) async {
+    await _box.write(key, value);
+  }
+
+  dynamic readValue(String key) {
+    return _box.read(key);
+  }
+
   Map<String, dynamic> read({required String key}) {
     Map<String, dynamic> userMap = {};
     final String? data = _box.read(key);

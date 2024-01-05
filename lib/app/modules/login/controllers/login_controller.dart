@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:travel/app/data/api_response.dart';
-import 'package:travel/app/data/model/auth_model.dart';
 import 'package:travel/app/data/repository/auth_repository.dart';
 import 'package:travel/app/routes/app_pages.dart';
 import 'package:travel/service/storage_service.dart';

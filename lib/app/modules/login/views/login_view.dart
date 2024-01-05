@@ -37,7 +37,7 @@ class LoginView extends GetView<LoginController> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
                       child: Text(
-                        "Sign In",
+                        "signIn".tr,
                         style: TextStyle(
                             fontSize: 25.sp,
                             fontWeight: FontWeight.w700,
@@ -57,81 +57,86 @@ class LoginView extends GetView<LoginController> {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(10)),
               width: Get.width,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Text(
-                      "Selamat Datang",
-                      style: TextStyle(
-                          fontSize: 20.sp, fontWeight: FontWeight.w800),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 15.h,
                     ),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const Text(
-                      "Silahkan login untuk melanjutkan.",
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  AppsTextField(
-                    "Email",
-                    textEditingController: controller.textEditingController[0],
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AppsTextField(
-                    "Password",
-                    textEditingController: controller.textEditingController[1],
-                    obsecureText: true,
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Text(
-                          "Lupa Password ?",
-                          style: TextStyle(
-                              color: AppsColors.primary(), fontSize: 13.sp),
-                        ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Text(
+                        "welcome".tr,
+                        style: TextStyle(
+                            fontSize: 20.sp, fontWeight: FontWeight.w800),
                       ),
-                      GestureDetector(
-                        onTap: () => Get.toNamed(Routes.REGISTRATION),
-                        child: Padding(
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Text(
+                        "loginDesc".tr,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                    AppsTextField(
+                      "Email",
+                      textEditingController:
+                          controller.textEditingController[0],
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    AppsTextField(
+                      "Password",
+                      textEditingController:
+                          controller.textEditingController[1],
+                      obsecureText: true,
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Text(
-                            "Daftar Akun",
+                            "forgetPassword".tr,
                             style: TextStyle(
                                 color: AppsColors.primary(), fontSize: 13.sp),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  Obx(() => !controller.isAuth.value
-                      ? AppsButton.normalButton(() => controller.onAuth(),
-                          "Masuk", AppsColors.primary())
-                      : const Center(
-                          child: CircularProgressIndicator(),
-                        ))
-                ],
+                        GestureDetector(
+                          onTap: () => Get.toNamed(Routes.REGISTRATION),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            child: Text(
+                              "register".tr,
+                              style: TextStyle(
+                                  color: AppsColors.primary(), fontSize: 13.sp),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Obx(() => !controller.isAuth.value
+                        ? AppsButton.normalButton(() => controller.onAuth(),
+                            "signIn".tr, AppsColors.primary())
+                        : const Center(
+                            child: CircularProgressIndicator(),
+                          ))
+                  ],
+                ),
               ),
             ),
           )

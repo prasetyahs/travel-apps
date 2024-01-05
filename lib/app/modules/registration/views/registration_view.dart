@@ -35,7 +35,7 @@ class RegistrationView extends GetView<RegistrationController> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
                       child: Text(
-                        "Sign Up",
+                        "signUp".tr,
                         style: TextStyle(
                             fontSize: 25.sp,
                             fontWeight: FontWeight.w700,
@@ -55,70 +55,78 @@ class RegistrationView extends GetView<RegistrationController> {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(10)),
               width: Get.width,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Text(
-                      "Selamat Datang",
-                      style: TextStyle(
-                          fontSize: 20.sp, fontWeight: FontWeight.w800),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 15.h,
                     ),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const Text(
-                      "Silahkan registrasi untuk melanjutkan.",
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  AppsTextField(
-                    "Nama",
-                    textEditingController: TextEditingController(),
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AppsTextField(
-                    "Email",
-                    textEditingController: TextEditingController(),
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  AppsTextField(
-                    "Password",
-                    textEditingController: TextEditingController(),
-                    obsecureText: true,
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.back(),
-                    child: Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
-                        "Sudah Punya Akun ?",
+                        "welcome".tr,
                         style: TextStyle(
-                            color: AppsColors.primary(), fontSize: 13.sp),
+                            fontSize: 20.sp, fontWeight: FontWeight.w800),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  AppsButton.normalButton(() {}, "Masuk", AppsColors.primary())
-                ],
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Text(
+                        "registerDesc".tr,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                    AppsTextField(
+                      "name".tr,
+                      textEditingController: controller.nameController,
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    AppsTextField(
+                      "Email",
+                      textEditingController: controller.emailController,
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    AppsTextField(
+                      "Password",
+                      textEditingController: controller.passwordController,
+                      obsecureText: true,
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Text(
+                          "haveAccount".tr,
+                          style: TextStyle(
+                              color: AppsColors.primary(), fontSize: 13.sp),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Obx(() => !controller.isLoading.value
+                        ? AppsButton.normalButton(() => controller.onRegister(),
+                            "signUp".tr, AppsColors.primary())
+                        : const Center(
+                            child: CircularProgressIndicator(),
+                          ))
+                  ],
+                ),
               ),
             ),
           )

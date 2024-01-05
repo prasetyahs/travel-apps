@@ -23,7 +23,7 @@ class DiscoverView extends GetView<IndexController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Lokasi saat ini",
+                "location".tr,
                 style: TextStyle(
                     color: AppsColors.dark(),
                     fontWeight: FontWeight.w600,
@@ -42,7 +42,7 @@ class DiscoverView extends GetView<IndexController> {
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w800,
-                          fontSize: 13.sp),
+                          fontSize: 11.sp),
                     ),
                   )
                 ],
@@ -87,7 +87,7 @@ class DiscoverView extends GetView<IndexController> {
                   );
                 }
                 return SizedBox(
-                  height: 50.h,
+                  height: 45.h,
                   child: ListView.builder(
                     shrinkWrap: true, // and set this
                     itemBuilder: (context, index) {
@@ -121,7 +121,7 @@ class DiscoverView extends GetView<IndexController> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Rekomendasi Wisata",
+                      "recommend".tr,
                       style: TextStyle(
                           color: AppsColors.dark(),
                           fontSize: 15.sp,
@@ -130,7 +130,7 @@ class DiscoverView extends GetView<IndexController> {
                     GestureDetector(
                       onTap: () => controller.indexActive.value = 1,
                       child: Text(
-                        "Selengkapnya",
+                        "other".tr,
                         style: TextStyle(
                             color: AppsColors.primary(),
                             fontSize: 12.sp,
@@ -185,7 +185,7 @@ class DiscoverView extends GetView<IndexController> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Populer Wisata",
+                      "popular".tr,
                       style: TextStyle(
                           color: AppsColors.dark(),
                           fontSize: 15.sp,
@@ -194,7 +194,7 @@ class DiscoverView extends GetView<IndexController> {
                     GestureDetector(
                       onTap: () => controller.indexActive.value = 1,
                       child: Text(
-                        "Selengkapnya",
+                        "other".tr,
                         style: TextStyle(
                             color: AppsColors.primary(),
                             fontSize: 12.sp,
