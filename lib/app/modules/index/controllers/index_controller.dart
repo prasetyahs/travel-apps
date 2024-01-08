@@ -71,14 +71,10 @@ class IndexController extends GetxController {
   }
 
   @override
-  void onReady() async {
+  void onReady() {
     super.onReady();
     onGetProfile();
-    await onLoadLocation().then((value) {
-      onLoadRecommend();
-      onLoadPopular();
-      onLoadClustering();
-    });
+    onLoadLocation();
     onLoadCategory();
     onLoadMaxPrice();
     selectLanguage.value = storageService.readValue("lang");
@@ -91,11 +87,17 @@ class IndexController extends GetxController {
         selectLang == 1 ? const Locale('id', 'ID') : const Locale("en", "US"));
   }
 
-  Future<void> onLoadLocation() async {
-    await locationService.checkLocationPermission().then((value) async {
+  onLoadLocation() async {
+    isLoadRecommend.value = true;
+    isLoadPopular.value = true;
+    isLoadClustering.value = true;
+    locationService.checkLocationPermission().then((value) async {
       await locationService.getCurrentLocation().then((value) async {
         lat = value!.latitude;
         long = value.longitude;
+        await onLoadRecommend();
+        await onLoadPopular();
+        await onLoadClustering();
         await placemarkFromCoordinates(lat, long).then((value) {
           locationData.value = value[0].subAdministrativeArea!;
         });
@@ -143,7 +145,6 @@ class IndexController extends GetxController {
   }
 
   onLoadRecommend() async {
-    isLoadRecommend.value = true;
     myRecommend.clear();
     await TravelRepository.getTravel(lat: lat, long: long, recommend: 1)
         .then((value) {
@@ -154,7 +155,6 @@ class IndexController extends GetxController {
   }
 
   onLoadPopular() async {
-    isLoadPopular.value = true;
     myPopular.clear();
     await TravelRepository.getTravel(lat: lat, long: long, isPopular: 1)
         .then((value) {
@@ -175,7 +175,6 @@ class IndexController extends GetxController {
   }
 
   onLoadClustering() async {
-    isLoadClustering.value = true;
     myClustering.clear();
     await TravelRepository.getClustering(lat: lat, long: long, k: 3)
         .then((value) {
