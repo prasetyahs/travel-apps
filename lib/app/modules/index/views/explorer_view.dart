@@ -11,6 +11,7 @@ import 'package:travel/utilities/exports.dart';
 
 class ExplorerView extends GetView<IndexController> {
   const ExplorerView({Key? key}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,6 +135,12 @@ class ExplorerView extends GetView<IndexController> {
                                             width: 80.w,
                                             height: 50.h,
                                             fit: BoxFit.cover,
+                                            progressIndicatorBuilder:
+                                                (context, url, progress) =>
+                                                    const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
                                             imageUrl: Env.IMAGE_URL +
                                                 travelModel.photos![0].photo!)
                                         : const Text("Photo Not Found"),

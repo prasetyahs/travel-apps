@@ -71,14 +71,15 @@ class IndexController extends GetxController {
   }
 
   @override
-  void onReady() {
+  void onReady() async {
     super.onReady();
     onGetProfile();
-    onLoadLocation();
+    await onLoadLocation().then((value) {
+      onLoadRecommend();
+      onLoadPopular();
+      onLoadClustering();
+    });
     onLoadCategory();
-    onLoadRecommend();
-    onLoadPopular();
-    onLoadClustering();
     onLoadMaxPrice();
     selectLanguage.value = storageService.readValue("lang");
   }
@@ -90,7 +91,7 @@ class IndexController extends GetxController {
         selectLang == 1 ? const Locale('id', 'ID') : const Locale("en", "US"));
   }
 
-  onLoadLocation() async {
+  Future<void> onLoadLocation() async {
     await locationService.checkLocationPermission().then((value) async {
       await locationService.getCurrentLocation().then((value) async {
         lat = value!.latitude;
@@ -112,7 +113,7 @@ class IndexController extends GetxController {
             ),
           ),
         ));
-      });
+      }).whenComplete(() => onLoadClustering());
     });
   }
 
