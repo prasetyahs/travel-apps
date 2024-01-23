@@ -48,7 +48,7 @@ class HomeView extends GetView<HomeController> {
             height: 20.h,
           ),
           AppsButton.normalButton(
-              () => Get.toNamed(Routes.LOGIN), "next".tr, Colors.white,
+              () => Get.toNamed(Routes.INDEX), "next".tr, Colors.white,
               fontColor: Colors.black),
           SizedBox(
             height: 80.h,

@@ -135,13 +135,28 @@ class DetailTravelView extends GetView<DetailTravelController> {
                               height: 10.h,
                             ),
                             Row(
-                              children: List.generate(
-                                  controller.travelModel.value.ratings!.length,
-                                  (index) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                        size: 20.sp,
-                                      )),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: List.generate(
+                                      controller
+                                          .travelModel.value.ratings!.length,
+                                      (index) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                            size: 20.sp,
+                                          )),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.w, vertical: 5.h),
+                                  child: Text(
+                                    "Rp.${controller.travelModel.value.price}",
+                                    style: TextStyle(
+                                        fontSize: 13.sp, color: Colors.black,fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(
                               height: 10.h,
