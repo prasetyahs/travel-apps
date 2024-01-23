@@ -71,6 +71,17 @@ class AppsItemRowTravel extends GetView {
                                 size: 20.sp,
                               )),
                     ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      "Rp. ${travelModel.price}",
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
                     Text(
                       travelModel.description!,
                       textAlign: TextAlign.start,

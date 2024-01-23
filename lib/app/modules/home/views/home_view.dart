@@ -12,6 +12,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: AppsColors.primary(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,

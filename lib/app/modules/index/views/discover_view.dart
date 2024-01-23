@@ -18,6 +18,7 @@ class DiscoverView extends GetView<IndexController> {
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -299,6 +300,16 @@ class BestPlace extends GetView {
                           color: Colors.amber,
                           size: 20.sp,
                         )),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                "Rp. ${travelModel.price}",
+                style: TextStyle(
+                    fontSize: 13.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700),
               )
             ],
           ),
