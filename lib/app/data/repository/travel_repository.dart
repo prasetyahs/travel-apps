@@ -6,9 +6,11 @@ class TravelRepository {
   }
 
   static Future<Map<String, dynamic>> getTravel(
-      {lat, long, recommend = 0, isPopular = 0}) async {
+      {lat, long, recommend = 0, isPopular = 0, categoryID}) async {
+    print(
+        "api/travel?my_lat=$lat&my_long=$long&recommend=$recommend&isPopular=$isPopular&category_id=$categoryID");
     return await ApiProvider.get(
-        "api/travel?my_lat=$lat&my_long=$long&recommend=$recommend&isPopular=$isPopular");
+        "api/travel?my_lat=$lat&my_long=$long&recommend=$recommend&isPopular=$isPopular&category_id=$categoryID");
   }
 
   static Future<Map<String, dynamic>> getClustering(
@@ -25,5 +27,9 @@ class TravelRepository {
 
   static Future<Map<String, dynamic>> getMaxPrice() async {
     return await ApiProvider.get("api/travel/range-price");
+  }
+
+  static Future<Map<String, dynamic>> getLocation() async {
+    return await ApiProvider.get("api/travel/get-location");
   }
 }

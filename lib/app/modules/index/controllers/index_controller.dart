@@ -6,6 +6,7 @@ import 'package:travel/app/data/api_provider.dart';
 import 'package:travel/app/data/api_response.dart';
 import 'package:travel/app/data/model/auth_model.dart';
 import 'package:travel/app/data/model/category_model.dart';
+import 'package:travel/app/data/model/location_model.dart' as location_model;
 import 'package:travel/app/data/model/travel_model.dart';
 import 'package:travel/app/data/repository/travel_repository.dart';
 import 'package:travel/app/data/repository/user_repository.dart';
@@ -55,14 +56,16 @@ class IndexController extends GetxController {
   var isOnEdit = false.obs;
   var onLoadSearch = false.obs;
   var markers = [].obs;
-
+  var selectIndexCategory = 0.obs;
   var editProfileForm = List.generate(3, (index) => TextEditingController());
   var searchForm = List.generate(1, (index) => TextEditingController());
   var selectCategory = CategoryModel().obs;
+  var selectCity = location_model.Data().obs;
   var maxPrice = 0.obs;
   var locationData = "Waiting Load".obs;
   final language = [0, 1].obs;
   var selectLanguage = 0.obs;
+  final listLocation = [].obs;
   @override
   void onInit() {
     super.onInit();
@@ -73,10 +76,12 @@ class IndexController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    selectIndexCategory.value = -1;
     onGetProfile();
     onLoadLocation();
     onLoadCategory();
     onLoadMaxPrice();
+    onLoadLocationSearch();
     selectLanguage.value = storageService.readValue("lang");
   }
 
@@ -85,6 +90,15 @@ class IndexController extends GetxController {
     storageService.writeValue("lang", selectLang);
     Get.updateLocale(
         selectLang == 1 ? const Locale('id', 'ID') : const Locale("en", "US"));
+  }
+
+  onLoadLocationSearch() async {
+    await TravelRepository.getLocation().then((value) {
+      ApiResponse apiResponse = ApiResponse.fromJson(value);
+      listLocation.addAll(apiResponse.data
+          .map((v) => location_model.Data.fromJson(v))
+          .toList());
+    });
   }
 
   onLoadLocation() async {
@@ -145,8 +159,15 @@ class IndexController extends GetxController {
   }
 
   onLoadRecommend() async {
+    isLoadRecommend.value = true;
     myRecommend.clear();
-    await TravelRepository.getTravel(lat: lat, long: long, recommend: 1)
+    await TravelRepository.getTravel(
+            lat: lat,
+            long: long,
+            recommend: 1,
+            categoryID: selectIndexCategory.value == -1
+                ? ""
+                : listCategory[selectIndexCategory.value].id)
         .then((value) {
       ApiResponse apiResponse = ApiResponse.fromJson(value);
       myRecommend.addAll(apiResponse.data);
@@ -155,8 +176,15 @@ class IndexController extends GetxController {
   }
 
   onLoadPopular() async {
+    isLoadPopular.value = true;
     myPopular.clear();
-    await TravelRepository.getTravel(lat: lat, long: long, isPopular: 1)
+    await TravelRepository.getTravel(
+            lat: lat,
+            long: long,
+            isPopular: 1,
+            categoryID: selectIndexCategory.value == -1
+                ? ""
+                : listCategory[selectIndexCategory.value].id)
         .then((value) {
       ApiResponse apiResponse = ApiResponse.fromJson(value);
       myPopular.addAll(apiResponse.data);
@@ -255,6 +283,7 @@ class IndexController extends GetxController {
 
   _onLoadBySearch() async {
     onLoadSearch.value = true;
+    _mySearchResult.clear();
     await TravelRepository.getTravelSearch(
             category: selectCategory.value.id,
             city: searchForm[0].text,

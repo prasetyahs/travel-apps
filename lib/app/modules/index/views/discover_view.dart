@@ -94,18 +94,26 @@ class DiscoverView extends GetView<IndexController> {
                     itemBuilder: (context, index) {
                       CategoryModel categoryModel =
                           controller.listCategory[index];
-                      return GestureDetector(
-                        onTap: () {},
-                        child: CategoryFilter(
-                          color:
-                              index == 0 ? AppsColors.primary() : Colors.white,
-                          textColor:
-                              index == 0 ? Colors.white : AppsColors.dark(),
-                          title: categoryModel.nama!,
-                          marginLeft: index == 0 ? 15.w : 0.0,
-                          marginRight: index == 5 ? 20.w : 0.0,
-                        ),
-                      );
+                      return Obx(() => GestureDetector(
+                            onTap: () {
+                              controller.selectIndexCategory.value = index;
+                              controller.onLoadPopular();
+                              controller.onLoadRecommend();
+                            },
+                            child: CategoryFilter(
+                              color:
+                                  controller.selectIndexCategory.value == index
+                                      ? AppsColors.primary()
+                                      : Colors.white,
+                              textColor:
+                                  controller.selectIndexCategory.value == index
+                                      ? Colors.white
+                                      : AppsColors.dark(),
+                              title: categoryModel.nama!,
+                              marginLeft: index == 0 ? 15.w : 0.0,
+                              marginRight: index == 5 ? 20.w : 0.0,
+                            ),
+                          ));
                     },
                     itemCount: controller.listCategory.length,
                     scrollDirection: Axis.horizontal,

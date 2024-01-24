@@ -1,7 +1,7 @@
 import 'package:travel/app/data/model/category_model.dart';
+import 'package:travel/app/data/model/location_model.dart' as location_model;
 import 'package:travel/app/modules/index/controllers/index_controller.dart';
 import 'package:travel/component/apps_button.dart';
-import 'package:travel/component/apps_textfield.dart';
 import 'package:travel/utilities/apps_colors.dart';
 import 'package:travel/utilities/exports.dart';
 
@@ -23,14 +23,49 @@ class SearchView extends GetView<IndexController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppsTextField(
-            "city".tr,
-            textEditingController: controller.searchForm[0],
-            suffixIcon: Icon(
-              Icons.my_location,
-              color: AppsColors.dark(),
-            ),
+          // AppsTextField(
+          //   "city".tr,
+          //   textEditingController: controller.searchForm[0],
+          //   suffixIcon: Icon(
+          //     Icons.my_location,
+          //     color: AppsColors.dark(),
+          //   ),
+          // ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Text("city".tr),
           ),
+          Obx(() {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10)),
+                child: DropdownButton<location_model.Data>(
+                    isExpanded: true,
+                    icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                    underline: const SizedBox(),
+                    value: controller.selectCity.value.city != null
+                        ? controller.selectCity.value
+                        : controller.listLocation.first,
+                    items: controller.listLocation
+                        .map<DropdownMenuItem<location_model.Data>>((element) {
+                      return DropdownMenuItem(
+                        value: element,
+                        child: Text(
+                          element.city!,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (location_model.Data? v) {
+                      controller.selectCity.value = v!;
+                    }),
+              ),
+            );
+          }),
           SizedBox(
             height: 20.h,
           ),
